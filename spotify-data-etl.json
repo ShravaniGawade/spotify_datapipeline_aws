@@ -1,0 +1,332 @@
+{
+	"dag": {
+		"node-1720485416588": {
+			"classification": "DataSource",
+			"type": "S3",
+			"name": "albums",
+			"inputs": [],
+			"isCatalog": false,
+			"recurse": true,
+			"paths": [
+				"s3://spotify-data-storage/staging/albums.csv"
+			],
+			"additionalOptions": {
+				"enableSamplePath": false,
+				"samplePath": "s3://spotify-data-storage/staging/albums.csv"
+			},
+			"inferSchemaChanged": false,
+			"format": "csv",
+			"generatedNodeName": "albums_node1720485416588",
+			"codeGenVersion": 2,
+			"separator": ",",
+			"quoteChar": "\"",
+			"withHeader": true,
+			"escaper": "",
+			"outputSchemas": [
+				[
+					{
+						"key": "track_name",
+						"fullPath": [
+							"track_name"
+						],
+						"type": "string"
+					},
+					{
+						"key": "track_id",
+						"fullPath": [
+							"track_id"
+						],
+						"type": "string"
+					},
+					{
+						"key": "duration_ms",
+						"fullPath": [
+							"duration_ms"
+						],
+						"type": "string"
+					},
+					{
+						"key": "album_name",
+						"fullPath": [
+							"album_name"
+						],
+						"type": "string"
+					},
+					{
+						"key": "release_date",
+						"fullPath": [
+							"release_date"
+						],
+						"type": "string"
+					},
+					{
+						"key": "label",
+						"fullPath": [
+							"label"
+						],
+						"type": "string"
+					},
+					{
+						"key": "album_popularity",
+						"fullPath": [
+							"album_popularity"
+						],
+						"type": "string"
+					},
+					{
+						"key": "album_id",
+						"fullPath": [
+							"album_id"
+						],
+						"type": "string"
+					},
+					{
+						"key": "artist_id",
+						"fullPath": [
+							"artist_id"
+						],
+						"type": "string"
+					},
+					{
+						"key": "duration_sec",
+						"fullPath": [
+							"duration_sec"
+						],
+						"type": "string"
+					}
+				]
+			]
+		},
+		"node-1720485417794": {
+			"classification": "DataSource",
+			"type": "S3",
+			"name": "artists",
+			"inputs": [],
+			"isCatalog": false,
+			"recurse": true,
+			"paths": [
+				"s3://spotify-data-storage/staging/artists.csv"
+			],
+			"additionalOptions": {
+				"enableSamplePath": false,
+				"samplePath": "s3://spotify-data-storage/staging/artists.csv"
+			},
+			"inferSchemaChanged": false,
+			"format": "csv",
+			"generatedNodeName": "artists_node1720485417794",
+			"codeGenVersion": 2,
+			"separator": ",",
+			"quoteChar": "\"",
+			"withHeader": true,
+			"escaper": "",
+			"outputSchemas": [
+				[
+					{
+						"key": "id",
+						"fullPath": [
+							"id"
+						],
+						"type": "string"
+					},
+					{
+						"key": "name",
+						"fullPath": [
+							"name"
+						],
+						"type": "string"
+					},
+					{
+						"key": "artist_popularity",
+						"fullPath": [
+							"artist_popularity"
+						],
+						"type": "string"
+					},
+					{
+						"key": "followers",
+						"fullPath": [
+							"followers"
+						],
+						"type": "string"
+					},
+					{
+						"key": "genre",
+						"fullPath": [
+							"genre"
+						],
+						"type": "string"
+					}
+				]
+			]
+		},
+		"node-1720485419447": {
+			"classification": "DataSource",
+			"type": "S3",
+			"name": "track",
+			"inputs": [],
+			"isCatalog": false,
+			"recurse": true,
+			"paths": [
+				"s3://spotify-data-storage/staging/track.csv"
+			],
+			"additionalOptions": {
+				"enableSamplePath": false,
+				"samplePath": "s3://spotify-data-storage/staging/track.csv"
+			},
+			"inferSchemaChanged": false,
+			"format": "csv",
+			"generatedNodeName": "track_node1720485419447",
+			"codeGenVersion": 2,
+			"separator": ",",
+			"quoteChar": "\"",
+			"withHeader": true,
+			"escaper": "",
+			"outputSchemas": [
+				[
+					{
+						"key": "track_id",
+						"fullPath": [
+							"track_id"
+						],
+						"type": "string"
+					},
+					{
+						"key": "track_popularity",
+						"fullPath": [
+							"track_popularity"
+						],
+						"type": "string"
+					}
+				]
+			]
+		},
+		"node-1720485915656": {
+			"classification": "Transform",
+			"type": "Join",
+			"name": "albums-artists-join",
+			"inputs": [
+				"node-1720485416588",
+				"node-1720485417794"
+			],
+			"joinType": "equijoin",
+			"columns": [
+				{
+					"from": "node-1720485416588",
+					"keys": [
+						"artist_id"
+					]
+				},
+				{
+					"from": "node-1720485417794",
+					"keys": [
+						"id"
+					]
+				}
+			],
+			"columnConditions": [
+				"="
+			],
+			"generatedNodeName": "albumsartistsjoin_node1720485915656",
+			"codeGenVersion": 2
+		},
+		"node-1720486073571": {
+			"classification": "Transform",
+			"type": "Join",
+			"name": "track-join",
+			"inputs": [
+				"node-1720485419447",
+				"node-1720485915656"
+			],
+			"joinType": "equijoin",
+			"columns": [
+				{
+					"from": "node-1720485419447",
+					"keys": [
+						"track_id"
+					]
+				},
+				{
+					"from": "node-1720485915656",
+					"keys": [
+						"track_id"
+					]
+				}
+			],
+			"columnConditions": [
+				"="
+			],
+			"generatedNodeName": "trackjoin_node1720486073571",
+			"codeGenVersion": 2
+		},
+		"node-1720486157216": {
+			"classification": "Transform",
+			"type": "DropFields",
+			"name": "Drop Fields",
+			"inputs": [
+				"node-1720486073571"
+			],
+			"paths": [
+				"`.track_id`",
+				"id"
+			],
+			"generatedNodeName": "DropFields_node1720486157216",
+			"codeGenVersion": 2
+		},
+		"node-1720486178469": {
+			"classification": "DataSink",
+			"type": "S3",
+			"name": "target",
+			"inputs": [
+				"node-1720486157216"
+			],
+			"format": "glueparquet",
+			"compression": "snappy",
+			"path": "s3://spotify-data-storage/datawarehouse/",
+			"partitionKeys": [],
+			"updateCatalogOptions": "none",
+			"schemaChangePolicy": {
+				"enableUpdateCatalog": false
+			},
+			"autoDataQuality": {
+				"isEnabled": false
+			},
+			"additionalOptions": {},
+			"generatedNodeName": "target_node1720486178469",
+			"codeGenVersion": 2
+		}
+	},
+	"jobConfig": {
+		"command": "glueetl",
+		"description": "",
+		"role": "arn:aws:iam::590184045988:role/glue-s3-access",
+		"scriptName": "spotify-data-etl.py",
+		"version": "4.0",
+		"language": "python-3",
+		"scriptLocation": "s3://aws-glue-assets-590184045988-us-east-1/scripts/",
+		"temporaryDirectory": "s3://aws-glue-assets-590184045988-us-east-1/temporary/",
+		"timeout": 2880,
+		"maxConcurrentRuns": 1,
+		"workerType": "G.1X",
+		"numberOfWorkers": "5",
+		"maxRetries": 0,
+		"metrics": true,
+		"observabilityMetrics": true,
+		"security": "none",
+		"bookmark": "job-bookmark-disable",
+		"logging": true,
+		"spark": true,
+		"sparkConfiguration": "standard",
+		"sparkPath": "s3://aws-glue-assets-590184045988-us-east-1/sparkHistoryLogs/",
+		"serverEncryption": false,
+		"glueHiveMetastore": true,
+		"etlAutoScaling": false,
+		"etlAutoTuning": false,
+		"jobParameters": [],
+		"tags": [],
+		"connectionsList": [],
+		"jobMode": "VISUAL_MODE",
+		"name": "spotify-data-etl",
+		"pythonPath": ""
+	},
+	"hasBeenSaved": false
+}

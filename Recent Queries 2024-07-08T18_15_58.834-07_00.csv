@@ -1,0 +1,21 @@
+Execution ID,Query,Start time,Status,Run time,Data scanned,Query engine version used,Encryption
+f9224d79-f234-4d53-a60e-2ec9e9c87f52,"SELECT track_name, track_popularity
+FROM datawarehouse
+ORDER BY CAST(track_popularity AS INT) DESC",2024-07-08T18:12:10.175-07:00,SUCCEEDED,1.353 sec,8.61 MB,Athena engine version 3,
+d3598619-8dac-44e6-b022-255c96705b7e,"SELECT artist_id, AVG(CAST(track_popularity AS INT)) AS avg_track_popularity
+FROM datawarehouse
+GROUP BY artist_id
+ORDER BY avg_track_popularity DESC
+LIMIT 1",2024-07-08T18:11:40.994-07:00,SUCCEEDED,678 ms,4.93 MB,Athena engine version 3,
+21a32640-b4d5-49a7-9ae2-c05700db6f0f,"SELECT album_name, release_date
+FROM datawarehouse
+WHERE release_date > '2020-01-01'",2024-07-08T18:11:14.835-07:00,SUCCEEDED,1.011 sec,9.03 MB,Athena engine version 3,
+500dd2a3-25b7-4423-ac31-d247d884816c,"SELECT artist_id, SUM(CAST(followers AS INT)) AS total_followers
+FROM datawarehouse
+GROUP BY artist_id
+ORDER BY total_followers DESC
+LIMIT 10",2024-07-08T18:10:46.930-07:00,SUCCEEDED,703 ms,5.70 MB,Athena engine version 3,
+20395d4d-a065-40a3-9aaa-8f2e5d611851,"SELECT album_name, COUNT(*) AS track_count
+FROM datawarehouse
+GROUP BY album_name",2024-07-08T18:10:09.901-07:00,SUCCEEDED,1.036 sec,6.60 MB,Athena engine version 3,
+23624522-4f2a-4f66-af3f-0896c862f915,Select * from datawarehouse limit 10,2024-07-08T18:08:44.984-07:00,SUCCEEDED,586 ms,3.30 MB,Athena engine version 3,
